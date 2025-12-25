@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   database:
-    image: postgres:17.4-alpine3.19
+    image: postgres:17-alpine
     container_name: saas_database
     restart: unless-stopped
     environment:
