@@ -1,18 +1,17 @@
 {
-  "name": "enhanced-saas-backend",
+  "name": "enhanced-saas-platform-backend",
   "version": "1.0.0",
-  "description": "Enhanced multi-tenant SaaS backend API with Project & Task Management",
+  "description": "Multi-tenant SaaS platform backend",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js",
-    "test": "jest --coverage",
-    "lint": "eslint src"
+    "dev": "node src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "saas",
-    "multi-tenant",
-    "api",
+    "multitenant",
+    "nodejs",
     "express",
     "postgresql"
   ],
@@ -20,22 +19,16 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.18.2",
-    "pg": "^8.11.3",
-    "jwt-simple": "^0.5.6",
-    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "uuid": "^9.0.1",
-    "joi": "^17.11.0",
     "helmet": "^7.1.0",
     "morgan": "^1.10.0",
-    "express-rate-limit": "^7.1.5",
-    "validator": "^13.11.0",
-    "lodash": "^4.17.21"
+    "pg": "^8.11.3",
+    "bcrypt": "^5.1.1",
+    "jwt-simple": "^0.5.6",
+    "uuid": "^9.0.1",
+    "dotenv": "^16.3.1"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1",
-    "eslint": "^8.54.0",
-    "jest": "^29.7.0"
+    "nodemon": "^3.0.2"
   }
 }

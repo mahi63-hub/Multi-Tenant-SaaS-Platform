@@ -1,31 +1,25 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../styles/navbar.css';
+import { Link } from 'react-router-dom'
+import '../styles/navbar.css'
 
-export default function Navbar() {
-  const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    navigate('/login');
-  };
-
+export default function Navbar({ user, onLogout }) {
   return (
     <nav className="navbar">
-      <div className="navbar-brand">
-        <h2>SaaS Platform</h2>
-      </div>
-      <ul className="navbar-links">
-        <li><a href="/">Dashboard</a></li>
-        <li><a href="/projects">Projects</a></li>
-        <li><a href="/tasks">Tasks</a></li>
-      </ul>
-      <div className="navbar-user">
-        <span>{user.fullName}</span>
-        <button onClick={handleLogout} className="logout-btn">Logout</button>
+      <div className="navbar-container">
+        <Link to="/" className="navbar-brand">
+          <h2>📊 SaaS Platform</h2>
+        </Link>
+
+        <div className="navbar-menu">
+          <Link to="/dashboard" className="nav-link">Dashboard</Link>
+          <Link to="/projects" className="nav-link">Projects</Link>
+          <Link to="/tasks" className="nav-link">Tasks</Link>
+        </div>
+
+        <div className="navbar-user">
+          <span className="user-name">{user?.fullName}</span>
+          <button onClick={onLogout} className="logout-btn">Logout</button>
+        </div>
       </div>
     </nav>
-  );
+  )
 }

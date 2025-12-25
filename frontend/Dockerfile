@@ -2,9 +2,13 @@ FROM node:20.15-alpine3.19
 
 WORKDIR /app
 
+# Copy package files
 COPY package*.json ./
-RUN npm ci && npm cache clean --force
 
+# Install dependencies
+RUN npm install
+
+# Copy source code
 COPY . .
 
 EXPOSE 3000

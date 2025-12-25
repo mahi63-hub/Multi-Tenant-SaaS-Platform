@@ -1,81 +1,100 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import '../styles/auth.css';
+import { useState } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
+import axios from 'axios'
+import '../styles/auth.css'
 
 export default function Register() {
-  const [email, setEmail] = useState('');
-  const [fullName, setFullName] = useState('');
-  const [password, setPassword] = useState('');
-  const [tenantName, setTenantName] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const [fullName, setFullName] = useState('')
+  const [email, setEmail] = useState('')
+  const [tenantName, setTenantName] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
 
-  const handleRegister = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setError('')
+    setLoading(true)
 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, {
-        email,
-        fullName,
-        password,
-        tenantName
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/auth/register`,
+        { fullName, email, tenantName, password }
+      )
 
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
+      const { token, user } = response.data
+      localStorage.setItem('token', token)
+      localStorage.setItem('user', JSON.stringify(user))
 
-      navigate('/');
+      navigate('/dashboard')
     } catch (err) {
-      setError(err.response?.data?.error || 'Registration failed');
+      setError(err.response?.data?.error || 'Registration failed')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <div className="auth-container">
-      <div className="auth-box">
-        <h1>Register</h1>
+      <div className="auth-card">
+        <h1>Create Account</h1>
         {error && <div className="error-message">{error}</div>}
-        <form onSubmit={handleRegister}>
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
-            type="text"
-            placeholder="Full Name"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            required
-          />
-          <input
-            type="text"
-            placeholder="Tenant Name (Organization)"
-            value={tenantName}
-            onChange={(e) => setTenantName(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+        
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="fullName">Full Name</label>
+            <input
+              id="fullName"
+              type="text"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="tenantName">Organization Name</label>
+            <input
+              id="tenantName"
+              type="text"
+              value={tenantName}
+              onChange={(e) => setTenantName(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
           <button type="submit" disabled={loading}>
-            {loading ? 'Registering...' : 'Register'}
+            {loading ? 'Creating account...' : 'Register'}
           </button>
         </form>
-        <p>Already have an account? <a href="/login">Login here</a></p>
+
+        <p className="auth-link">
+          Already have an account? <Link to="/login">Login here</Link>
+        </p>
       </div>
     </div>
-  );
+  )
 }

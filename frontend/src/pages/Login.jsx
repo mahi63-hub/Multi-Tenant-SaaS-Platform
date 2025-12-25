@@ -1,63 +1,79 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import '../styles/auth.css';
+import { useState } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
+import axios from 'axios'
+import '../styles/auth.css'
 
-export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+export default function Login({ setIsAuthenticated, setUser }) {
+  const [email, setEmail] = useState('admin@acme.com')
+  const [password, setPassword] = useState('admin123')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setError('')
+    setLoading(true)
 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, {
-        email,
-        password
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/auth/login`,
+        { email, password }
+      )
 
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
+      const { token, user } = response.data
 
-      navigate('/');
+      localStorage.setItem('token', token)
+      localStorage.setItem('user', JSON.stringify(user))
+
+      setIsAuthenticated(true)
+      setUser(user)
+      navigate('/dashboard')
     } catch (err) {
-      setError(err.response?.data?.error || 'Login failed');
+      setError(err.response?.data?.error || 'Login failed')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <div className="auth-container">
-      <div className="auth-box">
+      <div className="auth-card">
         <h1>Login</h1>
         {error && <div className="error-message">{error}</div>}
-        <form onSubmit={handleLogin}>
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+        
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
           <button type="submit" disabled={loading}>
             {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
-        <p>Don't have an account? <a href="/register">Register here</a></p>
+
+        <p className="auth-link">
+          Don't have an account? <Link to="/register">Register here</Link>
+        </p>
       </div>
     </div>
-  );
+  )
 }

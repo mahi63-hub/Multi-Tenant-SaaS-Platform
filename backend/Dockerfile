@@ -2,16 +2,21 @@ FROM node:20.15-alpine3.19
 
 WORKDIR /app
 
-# Needed to compile bcrypt native bindings
-RUN apk add --no-cache python3 make g++
+# Install build tools REQUIRED for native modules like bcrypt
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    && rm -rf /var/cache/apk/*
 
 # Copy only package files first
 COPY package*.json ./
 
-# Install ALL dependencies (including bcrypt) inside the image
-RUN npm install && npm cache clean --force
+# Install dependencies INSIDE container (not from host)
+# This ensures bcrypt compiles for Alpine Linux
+RUN npm install
 
-# Now copy the rest of the app
+# Copy application code
 COPY . .
 
 EXPOSE 5000

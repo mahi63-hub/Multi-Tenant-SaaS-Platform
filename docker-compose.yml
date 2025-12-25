@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
       POSTGRES_DB: saas_db
-      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8"
       PGDATA: /var/lib/postgresql/data/pgdata
     ports:
       - "5432:5432"
@@ -23,13 +23,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 10s
+      start_period: 15s
     networks:
       - saas_network
-    command:
-      - "postgres"
-      - "-c"
-      - "log_statement=none"
 
   backend:
     build:
@@ -44,7 +40,7 @@ services:
       DB_PORT: 5432
       DB_NAME: saas_db
       DB_USER: postgres
-      DB_PASSWORD: root
+      DB_PASSWORD: postgres
       JWT_SECRET: super_secret_jwt_key_change_in_production_12345
       JWT_EXPIRY: 7d
       BCRYPT_ROUNDS: 10
@@ -57,10 +53,10 @@ services:
       database:
         condition: service_healthy
     volumes:
-      - ./backend:/app
-      
+      - ./backend/src:/app/src
     networks:
       - saas_network
+    command: node src/server.js
 
   frontend:
     build:
@@ -76,10 +72,11 @@ services:
     depends_on:
       - backend
     volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - ./frontend/src:/app/src
+      - ./frontend/index.html:/app/index.html
     networks:
       - saas_network
+    command: npm run dev -- --host 0.0.0.0 --port 3000
 
 volumes:
   postgres_data:
