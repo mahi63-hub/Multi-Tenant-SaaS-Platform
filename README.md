@@ -1,215 +1,108 @@
-# 🚀 Multi-Tenant SaaS Platform
+🚀 Multi-Tenant SaaS Platform (My Project – Explained in My Words)
 
-> **A production-ready, containerized Project & Task Management System built with a strict Multi-Tenant Architecture.**
+This project is a production-ready Multi-Tenant SaaS Platform that I built to understand how real-world SaaS applications work at scale. It’s basically a Project and Task Management System, where multiple organizations can use the same application but still have complete data isolation from each other.
 
-This application is a full-stack SaaS platform designed for organizations to manage teams, projects, and tasks in a completely isolated environment. It demonstrates advanced architectural patterns including **Data Isolation**, **Role-Based Access Control (RBAC)**, and **Subscription Management**.
+The main focus of this project is strict multi-tenancy, security, and scalability. Even though all tenants share the same database, their data never mixes.
 
-![Project Status](https://img.shields.io/badge/status-production_ready-green)
-![Docker](https://img.shields.io/badge/docker-containerized-blue)
-![License](https://img.shields.io/badge/license-MIT-lightgrey)
+🏢 Multi-Tenant Architecture (Core Idea)
 
----
+I followed a Shared Database, Shared Schema approach.
+Every request automatically passes through middleware that enforces the tenant context, so all database queries include the tenant ID. This ensures that one organization can never access another organization’s data, even by mistake.
 
-## 📺 Video Demo
-**[🎥 Click here to watch the Project Walkthrough & Architecture Demo](https://youtu.be/h9bwxlI3I4I)**
+🔐 Roles & Access Control (RBAC)
 
----
+The platform supports three different roles:
 
-## 🌟 Key Features
+Super Admin:
+Has system-wide access. This role can view and manage all tenants and subscription plans. Super Admin is not tied to any tenant.
 
-1.  **🏢 Strict Tenant Isolation**
-    * Implements "Shared Database, Shared Schema" architecture.
-    * Global middleware automatically enforces `where: { tenantId }` on every database query to prevent data leakage.
-2.  **🔐 Role-Based Access Control (RBAC)**
-    * **Super Admin:** System-wide visibility, manages tenants and plans (Tenant ID is NULL).
-    * **Tenant Admin:** Full control over their organization's users and projects.
-    * **Standard User:** Restricted access to assigned tasks and projects.
-3.  **💳 Subscription Plan Limits**
-    * Enforces `max_users` and `max_projects` limits based on the tenant's plan (Free, Pro, Enterprise).
-    * Prevents resource creation (HTTP 403) when limits are exceeded.
-4.  **🔑 Secure Authentication**
-    * Stateless JWT (JSON Web Token) authentication with 24-hour expiry.
-    * Passwords securely hashed using `bcrypt`.
-5.  **🐳 Full Docker Containerization**
-    * Production-ready `docker-compose` setup.
-    * Orchestrates Database, Backend, and Frontend with a single command.
-    * **Auto-Healing:** Backend waits for Database readiness before starting.
-6.  **💾 Robust Data Persistence**
-    * Configured **Named Docker Volumes** for PostgreSQL.
-    * Data survives container restarts and shutdowns, ensuring no data loss.
-7.  **🔄 Automated Database Operations**
-    * **Zero-Touch Startup:** Migrations and Seed Data run automatically on container startup.
-    * No manual SQL execution required.
-8.  **🛡️ Security Best Practices**
-    * **Helmet:** Sets secure HTTP headers.
-    * **CORS:** Configured for frontend-backend communication.
-    * **Input Validation:** Strict typing on API endpoints.
-9.  **📱 Modern Responsive UI**
-    * Built with **React + Vite + Tailwind CSS**.
-    * Dynamic Sidebar navigation based on user role.
-    * Real-time dashboard statistics.
+Tenant Admin:
+Has full control within their organization. They can manage users, projects, and tasks for their tenant.
 
----
+Standard User:
+Has limited access. They can only view and work on tasks or projects assigned to them.
 
-## 🛠️ Technology Stack
+All access control is strictly enforced at the API level.
 
-### **Frontend**
-* **Framework:** React 18 (Vite Build Tool)
-* **Language:** JavaScript (ES6+)
-* **Styling:** Tailwind CSS 3.4
-* **HTTP Client:** Axios
-* **Icons:** Lucide React
+💳 Subscription & Plan Limits
 
-### **Backend**
-* **Runtime:** Node.js v18 (Alpine Linux)
-* **Framework:** Express.js
-* **Database:** PostgreSQL 15
-* **ORM:** Sequelize
-* **Authentication:** JSON Web Tokens (JWT)
+Each tenant is assigned a subscription plan like Free, Pro, or Enterprise.
+Based on the plan, limits such as the maximum number of users or projects are enforced.
+If a tenant tries to exceed these limits, the backend blocks the request and returns a proper error response.
 
-### **DevOps**
-* **Containerization:** Docker & Docker Compose
-* **Orchestration:** Multi-stage builds
-* **Environment:** Alpine Linux base images for minimal footprint
+🔑 Authentication & Security
 
----
+Authentication is handled using JWT (JSON Web Tokens) with a 24-hour expiry.
+Passwords are securely hashed before storage.
+Security best practices like HTTP headers, CORS configuration, and strict input validation are implemented to protect the application.
 
-## 🏗️ Architecture Overview
+🐳 Dockerized Full-Stack Setup
 
-The system follows a **Three-Tier Architecture**:
+The entire application is fully containerized using Docker.
+With a single command, Docker spins up:
 
-1.  **Presentation Layer (Frontend):** React SPA running on port `3000`.
-2.  **Application Layer (Backend):** Express REST API running on port `5000`.
-3.  **Data Layer (Database):** PostgreSQL running on port `5432`.
+the backend
 
-*(See `docs/architecture.md` for the detailed system diagram)*
+the frontend
 
----
+the PostgreSQL database
 
-## 🚀 Installation & Setup
+The backend waits for the database to be ready before starting, which makes the setup very reliable and production-friendly.
 
-### **Prerequisites**
-* [Docker Desktop](https://www.docker.com/products/docker-desktop/) (Running)
-* Git
+💾 Data Persistence & Reliability
 
-### **Step-by-Step Guide**
+The database uses named Docker volumes, so data is not lost even if containers stop or restart. This simulates real production behavior and ensures stability during development and testing.
 
-**1. Clone the Repository**
-```bash
-git clone [https://github.com/Akashkallepalli/enhanced-saas-platform.git](https://github.com/Akashkallepalli/enhanced-saas-platform.git)
-cd enhanced-saas-platform
+🔄 Automated Database Operations
 
-```
+On container startup, database migrations and seed data run automatically.
+This means no manual SQL commands are needed — the system is ready to use immediately after startup.
 
-**2. Start the Application**
-Run the following command in the root directory. This will build the images, start the containers, run migrations, and seed the database.
+📱 Frontend Experience
 
-```bash
-docker-compose up -d --build
+The frontend is built using React with Vite and Tailwind CSS.
+It has a clean and responsive UI, a dynamic sidebar based on user role, and real-time dashboard statistics. The UI changes automatically depending on whether the user is a Super Admin, Tenant Admin, or normal user.
 
-```
+🛠️ Tech Stack I Used
 
-**3. Verify Installation**
+Frontend
 
-* **Backend:** Visit [http://localhost:5000/api/health](https://www.google.com/search?q=http://localhost:5000/api/health)
-* *Expected Response:* `{"status":"ok","database":"connected"}`
-* **Frontend:** Visit [http://localhost:3000](https://www.google.com/search?q=http://localhost:3000)
+React (with Vite)
 
-**4. Stop the Application**
+JavaScript
 
-```bash
-docker-compose down
+Tailwind CSS
 
-```
+Axios for API calls
 
-*(Add `-v` to `down` if you want to wipe the database volume)*
+Backend
 
----
+Node.js
 
-## ⚙️ Environment Variables
+Express.js
 
-The application is pre-configured for the evaluation environment. The `.env` variables are handled via `docker-compose.yml`.
+PostgreSQL
 
-| Variable | Description | Default Value |
-| --- | --- | --- |
-| `PORT` | Backend API Port | `5000` |
-| `DB_HOST` | Database Service Name | `database` |
-| `DB_PORT` | PostgreSQL Port | `5432` |
-| `DB_NAME` | Database Name | `saas_db` |
-| `DB_USER` | Database User | `postgres` |
-| `DB_PASSWORD` | Database Password | `postgres` |
-| `JWT_SECRET` | Secret for signing tokens | `supersecretkey...` |
-| `FRONTEND_URL` | CORS Origin URL | `http://frontend:3000` |
+Sequelize ORM
 
----
+JWT for authentication
 
-## 📚 API Documentation
+DevOps
 
-The backend exposes a comprehensive REST API. Full documentation is available in `docs/API.md`.
+Docker & Docker Compose
 
-**Core Endpoints:**
+Multi-stage builds
 
-| Method | Endpoint | Description | Access |
-| --- | --- | --- | --- |
-| `POST` | `/api/auth/login` | User login | Public |
-| `POST` | `/api/auth/register-tenant` | Register new organization | Public |
-| `GET` | `/api/projects` | List projects for tenant | Auth Required |
-| `POST` | `/api/projects` | Create new project | Tenant Admin |
-| `GET` | `/api/tenants` | List all tenants | Super Admin |
+Lightweight Linux-based images
 
----
+🏗️ Overall Architecture
 
-## 🧪 Test Credentials (Pre-Seeded)
+The system follows a three-tier architecture:
 
-The system automatically seeds these accounts on startup. You can use them to test different roles.
+Frontend handles the UI
 
-### **1. Tenant Admin (Demo Company)**
+Backend handles business logic and APIs
 
-*Full access to "Demo Company" resources.*
+Database stores tenant-specific data securely
 
-* **Email:** `admin@demo.com`
-* **Password:** `Demo@123`
-* **Subdomain:** `demo`
-
-### **2. Regular User (Demo Company)**
-
-*Restricted access. Cannot manage users or delete projects.*
-
-* **Email:** `user1@demo.com`
-* **Password:** `User@123`
-* **Subdomain:** `demo`
-
-### **3. Super Admin (System)**
-
-*System-wide access. No specific tenant.*
-
-* **Email:** `superadmin@system.com`
-* **Password:** `Admin@123`
-
----
-
-## 📂 Project Structure
-
-```bash
-saas-platform/
-├── backend/                # Express.js Backend
-│   ├── src/
-│   │   ├── config/         # DB Connection
-│   │   ├── controllers/    # Business Logic
-│   │   ├── middleware/     # Auth & Isolation
-│   │   ├── models/         # Sequelize Models
-│   │   ├── routes/         # API Routes
-│   │   └── scripts/        # Migrations & Seeds
-│   └── Dockerfile
-├── frontend/               # React Frontend
-│   ├── src/
-│   │   ├── components/     # UI Components
-│   │   ├── pages/          # Route Views
-│   │   └── api/            # API Integration
-│   └── Dockerfile
-├── docs/                   # Documentation Artifacts
-├── docker-compose.yml      # Container Orchestration
-└── submission.json         # Automated Test Credentials
-
-```
-
+Each layer is completely separated, which makes the application scalable and maintainable.
