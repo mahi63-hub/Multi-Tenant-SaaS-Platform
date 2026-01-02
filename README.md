@@ -1,4 +1,4 @@
-🚀 Multi-Tenant SaaS Platform (My Project – Explained in My Words)
+🚀 Multi-Tenant SaaS Platform 
 
 This project is a production-ready Multi-Tenant SaaS Platform that I built to understand how real-world SaaS applications work at scale. It’s basically a Project and Task Management System, where multiple organizations can use the same application but still have complete data isolation from each other.
 
