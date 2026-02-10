@@ -49,15 +49,15 @@ services:
     ports:
       - "3000:3000" # External:Internal
     environment:
-      VITE_API_URL: http://localhost:5000/api
-      REACT_APP_API_URL: http://localhost:5000/api
+      VITE_API_URL: http://backend:5000/api
+      REACT_APP_API_URL: http://backend:5000/api
     depends_on:
       - backend
     volumes:
       - ./frontend:/app
       - /app/node_modules
     # This command ensures Vite binds to 0.0.0.0 so it's accessible outside Docker
-    command: npm run dev -- --host 0.0.0.0 
+    command: npm run dev -- --host 0.0.0.0
 
 volumes:
   db_data:
