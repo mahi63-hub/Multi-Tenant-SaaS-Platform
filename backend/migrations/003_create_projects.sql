@@ -6,11 +6,14 @@ END $$;
 
 CREATE TABLE IF NOT EXISTS "projects" (
     "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    "tenant_id" UUID NOT NULL REFERENCES "tenants" ("id") ON DELETE CASCADE,
     "name" VARCHAR(255) NOT NULL,
     "description" TEXT,
     "status" "enum_projects_status" DEFAULT 'active',
-    "tenantId" UUID NOT NULL REFERENCES "tenants" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    "createdById" UUID NOT NULL REFERENCES "users" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
-    "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    "created_by" UUID NOT NULL REFERENCES "users" ("id") ON DELETE CASCADE,
+    "created_at" TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    "updated_at" TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+CREATE INDEX IF NOT EXISTS "projects_tenant_id_idx" ON "projects" ("tenant_id");
+CREATE INDEX IF NOT EXISTS "projects_created_by_idx" ON "projects" ("created_by");

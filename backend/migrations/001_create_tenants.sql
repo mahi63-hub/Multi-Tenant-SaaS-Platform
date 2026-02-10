@@ -1,13 +1,13 @@
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 DO $$ BEGIN
-    CREATE TYPE "enum_tenants_status" AS ENUM ('active', 'suspended');
+    CREATE TYPE "enum_tenants_status" AS ENUM ('active', 'suspended', 'trial');
 EXCEPTION
     WHEN duplicate_object THEN null;
 END $$;
 
 DO $$ BEGIN
-    CREATE TYPE "enum_tenants_subscriptionPlan" AS ENUM ('free', 'pro', 'enterprise');
+    CREATE TYPE "enum_tenants_subscription_plan" AS ENUM ('free', 'pro', 'enterprise');
 EXCEPTION
     WHEN duplicate_object THEN null;
 END $$;
@@ -17,9 +17,11 @@ CREATE TABLE IF NOT EXISTS "tenants" (
     "name" VARCHAR(255) NOT NULL,
     "subdomain" VARCHAR(255) NOT NULL UNIQUE,
     "status" "enum_tenants_status" DEFAULT 'active',
-    "subscriptionPlan" "enum_tenants_subscriptionPlan" DEFAULT 'free',
-    "maxUsers" INTEGER DEFAULT 5,
-    "maxProjects" INTEGER DEFAULT 3,
-    "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    "subscription_plan" "enum_tenants_subscription_plan" DEFAULT 'free',
+    "max_users" INTEGER DEFAULT 5,
+    "max_projects" INTEGER DEFAULT 3,
+    "created_at" TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    "updated_at" TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+CREATE INDEX IF NOT EXISTS "tenants_subdomain_idx" ON "tenants" ("subdomain");
