@@ -7,37 +7,35 @@ const AuditLog = sequelize.define('AuditLog', {
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true
   },
+  tenant_id: {
+    type: DataTypes.UUID,
+    allowNull: true
+  },
+  user_id: {
+    type: DataTypes.UUID,
+    allowNull: true
+  },
   action: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  entityType: {
+  entity_type: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  entityId: {
+  entity_id: {
     type: DataTypes.STRING,
     allowNull: true
   },
-  details: {
-    type: DataTypes.JSONB,
-    allowNull: true
-  },
-  ipAddress: {
+  ip_address: {
     type: DataTypes.STRING,
-    allowNull: true
-  },
-  tenantId: {
-    type: DataTypes.UUID,
-    allowNull: true
-  },
-  userId: {
-    type: DataTypes.UUID,
     allowNull: true
   }
 }, {
-  timestamps: true,
-  tableName: 'audit_logs'
+  timestamps: false,
+  createdAt: 'created_at',
+  tableName: 'audit_logs',
+  underscored: true
 });
 
 module.exports = AuditLog;

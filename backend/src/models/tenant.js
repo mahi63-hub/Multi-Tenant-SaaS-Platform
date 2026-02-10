@@ -17,24 +17,25 @@ const Tenant = sequelize.define('Tenant', {
     unique: true
   },
   status: {
-    type: DataTypes.ENUM('active', 'suspended'),
+    type: DataTypes.ENUM('active', 'suspended', 'trial'),
     defaultValue: 'active'
   },
-  subscriptionPlan: {
+  subscription_plan: {
     type: DataTypes.ENUM('free', 'pro', 'enterprise'),
     defaultValue: 'free'
   },
-  maxUsers: {
+  max_users: {
     type: DataTypes.INTEGER,
     defaultValue: 5
   },
-  maxProjects: {
+  max_projects: {
     type: DataTypes.INTEGER,
     defaultValue: 3
   }
 }, {
   timestamps: true,
-  tableName: 'tenants'
+  tableName: 'tenants',
+  underscored: true
 });
 
 module.exports = Tenant;

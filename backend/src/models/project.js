@@ -7,6 +7,10 @@ const Project = sequelize.define('Project', {
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true
   },
+  tenant_id: {
+    type: DataTypes.UUID,
+    allowNull: false
+  },
   name: {
     type: DataTypes.STRING,
     allowNull: false
@@ -18,17 +22,14 @@ const Project = sequelize.define('Project', {
     type: DataTypes.ENUM('active', 'archived', 'completed'),
     defaultValue: 'active'
   },
-  tenantId: {
-    type: DataTypes.UUID,
-    allowNull: false
-  },
-  createdById: {
+  created_by: {
     type: DataTypes.UUID,
     allowNull: false
   }
 }, {
   timestamps: true,
-  tableName: 'projects' // <--- Forces lowercase table name
+  tableName: 'projects',
+  underscored: true
 });
 
 module.exports = Project;

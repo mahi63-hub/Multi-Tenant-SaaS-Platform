@@ -8,27 +8,30 @@ const AuditLog = require('./auditLog');
 // --- Relationships ---
 
 // Tenant has many...
-Tenant.hasMany(User, { foreignKey: 'tenantId', as: 'users' });
-Tenant.hasMany(Project, { foreignKey: 'tenantId', as: 'projects' });
-Tenant.hasMany(Task, { foreignKey: 'tenantId', as: 'tasks' });
-Tenant.hasMany(AuditLog, { foreignKey: 'tenantId', as: 'auditLogs' });
+Tenant.hasMany(User, { foreignKey: 'tenant_id', as: 'users' });
+Tenant.hasMany(Project, { foreignKey: 'tenant_id', as: 'projects' });
+Tenant.hasMany(Task, { foreignKey: 'tenant_id', as: 'tasks' });
+Tenant.hasMany(AuditLog, { foreignKey: 'tenant_id', as: 'auditLogs' });
 
 // User relationships
-User.belongsTo(Tenant, { foreignKey: 'tenantId', as: 'tenant' });
-// FIX: Using 'createdById' to match the database column
-User.hasMany(Project, { foreignKey: 'createdById', as: 'createdProjects' });
-User.hasMany(Task, { foreignKey: 'assignedTo', as: 'assignedTasks' });
+User.belongsTo(Tenant, { foreignKey: 'tenant_id', as: 'tenant' });
+User.hasMany(Project, { foreignKey: 'created_by', as: 'createdProjects' });
+User.hasMany(Task, { foreignKey: 'assigned_to', as: 'assignedTasks' });
+User.hasMany(AuditLog, { foreignKey: 'user_id', as: 'auditLogs' });
 
 // Project relationships
-Project.belongsTo(Tenant, { foreignKey: 'tenantId', as: 'tenant' });
-// FIX: Using 'createdById' to match the database column
-Project.belongsTo(User, { foreignKey: 'createdById', as: 'creator' });
-Project.hasMany(Task, { foreignKey: 'projectId', as: 'tasks' });
+Project.belongsTo(Tenant, { foreignKey: 'tenant_id', as: 'tenant' });
+Project.belongsTo(User, { foreignKey: 'created_by', as: 'creator' });
+Project.hasMany(Task, { foreignKey: 'project_id', as: 'tasks' });
 
 // Task relationships
-Task.belongsTo(Tenant, { foreignKey: 'tenantId', as: 'tenant' });
-Task.belongsTo(Project, { foreignKey: 'projectId', as: 'project' });
-Task.belongsTo(User, { foreignKey: 'assignedTo', as: 'assignee' });
+Task.belongsTo(Tenant, { foreignKey: 'tenant_id', as: 'tenant' });
+Task.belongsTo(Project, { foreignKey: 'project_id', as: 'project' });
+Task.belongsTo(User, { foreignKey: 'assigned_to', as: 'assignee' });
+
+// AuditLog relationships
+AuditLog.belongsTo(Tenant, { foreignKey: 'tenant_id', as: 'tenant' });
+AuditLog.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
 module.exports = {
   sequelize,
