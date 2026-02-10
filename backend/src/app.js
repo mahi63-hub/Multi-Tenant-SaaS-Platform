@@ -9,10 +9,10 @@ const sequelize = require('./config/database');
 
 // Import Routes
 const authRoutes = require('./routes/authRoutes');
-const projectRoutes = require('./routes/projectRoutes');
-const userRoutes = require('./routes/userRoutes');
-const taskRoutes = require('./routes/taskRoutes');
 const tenantRoutes = require('./routes/tenantRoutes');
+const userRoutes = require('./routes/userRoutes');
+const projectRoutes = require('./routes/projectRoutes');
+const taskRoutes = require('./routes/taskRoutes');
 
 const app = express();
 
@@ -25,30 +25,29 @@ app.use(cors({
 app.use(express.json());
 app.use(morgan('dev'));
 
-// Health Check Endpoint (UPDATED)
+// Health Check Endpoint
 app.get('/api/health', async (req, res) => {
   try {
-    // Attempt to connect to the database
     await sequelize.authenticate();
-    // Only return 200 if DB connection succeeds
     res.status(200).json({ status: 'ok', database: 'connected' });
   } catch (error) {
     console.error('Health Check Failed:', error);
-    // Return 503 Service Unavailable if DB is down
-    res.status(503).json({ 
-      status: 'error', 
-      database: 'disconnected', 
-      error: error.message 
+    res.status(503).json({
+      status: 'error',
+      database: 'disconnected',
+      error: error.message
     });
   }
 });
 
 // Register Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/projects', projectRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/tasks', taskRoutes);
 app.use('/api/tenants', tenantRoutes);
+app.use('/api/tenants/:tenantId/users', userRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api/projects/:projectId/tasks', taskRoutes);
+app.use('/api/tasks', taskRoutes);
 
 // Global Error Handler
 app.use((err, req, res, next) => {
